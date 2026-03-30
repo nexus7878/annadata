@@ -266,11 +266,11 @@ export default function MandiPricesPage() {
                       
                       {/* Top Row: Crop Info */}
                       <div className="flex items-start justify-between gap-4 mb-5 relative z-10">
-                        <div className="flex gap-4">
-                          <div className="relative h-16 w-16 rounded-2xl overflow-hidden shadow-md shrink-0 ring-1 ring-border group-hover:ring-primary/50 transition-all">
-                            <Image src={item.image} alt={item.crop} fill className="object-cover group-hover:scale-110 transition-transform duration-700 will-change-transform" sizes="64px" />
+                        <div className="flex gap-3 sm:gap-4 flex-1 min-w-0">
+                          <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-2xl overflow-hidden shadow-md shrink-0 ring-1 ring-border group-hover:ring-primary/50 transition-all">
+                            <Image src={item.image} alt={item.crop} fill className="object-cover group-hover:scale-110 transition-transform duration-700 will-change-transform" sizes="(max-width: 640px) 56px, 64px" />
                           </div>
-                          <div>
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1.5">
                               <h4 className="font-bold text-lg text-foreground capitalize leading-none">{item.crop}</h4>
                               {item.live && (
@@ -280,11 +280,11 @@ export default function MandiPricesPage() {
                                 </span>
                               )}
                             </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium truncate max-w-[150px]" title={item.market}>
-                                <MapPin className="h-3 w-3 shrink-0" /> <span className="truncate">{item.market}</span>
+                            <div className="flex flex-col gap-1 mt-0.5">
+                              <span className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium" title={item.market}>
+                                <MapPin className="h-3 w-3 shrink-0" /> <span className="line-clamp-1">{item.market}</span>
                               </span>
-                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-bold ml-4.5 pl-4">{item.distance}</span>
+                              <span className="text-[10px] uppercase tracking-wider text-muted-foreground/70 font-bold ml-4 pl-0.5">{item.distance}</span>
                             </div>
                           </div>
                         </div>
@@ -294,7 +294,7 @@ export default function MandiPricesPage() {
                       <div className="grid grid-cols-2 gap-3 mb-6 relative z-10 flex-1">
                          <div className="bg-background/50 rounded-2xl p-3 border border-border/50">
                             <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mb-1">Modal Price</p>
-                            <p className="font-bold text-xl text-foreground">{item.price}</p>
+                            <p className="font-bold text-lg sm:text-xl text-foreground truncate">{item.price}</p>
                             <p className="text-[10px] text-muted-foreground mt-1">per Quintal</p>
                          </div>
                          <div className="bg-background/50 rounded-2xl p-3 border border-border/50 flex flex-col justify-between">
@@ -313,7 +313,7 @@ export default function MandiPricesPage() {
                       {/* Bottom Row: Action */}
                       <div className="relative z-10 border-t border-border/50 pt-4 mt-auto flex items-center justify-between">
                         <span className="text-[10px] text-muted-foreground font-medium">Updated: {item.arrivalDate}</span>
-                        <Button className="rounded-xl font-bold shadow-md gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
+                        <Button className="rounded-xl font-bold shadow-md gap-1 sm:gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all text-xs sm:text-sm px-3 sm:px-4">
                           Sell Now <ArrowRight className="h-4 w-4" />
                         </Button>
                       </div>
@@ -463,8 +463,8 @@ export default function MandiPricesPage() {
                   <p className="text-[10px] text-amber-500 uppercase tracking-widest font-bold">Target Locked</p>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mb-6 relative z-10 leading-relaxed">
-                We will notify you instantly when <strong className="text-foreground border-b border-foreground/30">Wheat (Lokwan)</strong> crosses <strong className="text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded">₹2,400</strong> per quintal in Delhi NCR.
+              <p className="text-xs sm:text-sm text-muted-foreground mb-6 relative z-10 leading-relaxed">
+                We will notify you instantly when <strong className="text-foreground border-b border-foreground/30">Wheat (Lokwan)</strong> crosses <strong className="text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded ml-1 mr-1">₹2,400</strong> per quintal in Delhi NCR.
               </p>
               <Button className="w-full rounded-xl font-bold bg-background/50 hover:bg-background border-amber-500/30 text-amber-600 dark:text-amber-500 relative z-10 transition-colors" variant="outline">
                 Manage Alerts
