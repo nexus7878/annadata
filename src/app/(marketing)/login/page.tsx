@@ -128,7 +128,7 @@ export default function LoginPage() {
                   transition={{ duration: 0.5 }}
                 >
                   <h1 className="text-4xl xl:text-5xl font-heading font-bold mb-5 leading-[1.1] tracking-tight text-white drop-shadow-md">
-                    Empowering your farm's future.
+                    Empowering your farm&apos;s future.
                   </h1>
                   <p className="text-lg text-white/70 font-light leading-relaxed">
                     Join thousands of verified farmers sharing data, utilizing AI crop analysis, and connecting straight to high-value markets globally.
@@ -282,7 +282,7 @@ export default function LoginPage() {
 
           <div className="text-center">
             <span className="text-muted-foreground text-sm font-medium">
-              Don't have an account?
+              Don&apos;t have an account?
             </span>
             <Link
               href="/register"

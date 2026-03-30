@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Upload, ScanLine, X, ImageIcon, CheckCircle2, ShieldAlert, Sparkles,
-  FlaskConical, Beaker, Leaf, AlertTriangle, ArrowRight, Droplets,
+  FlaskConical, Beaker, Leaf, AlertTriangle, Droplets,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 

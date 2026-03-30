@@ -101,6 +101,7 @@ interface PriceChartProps {
   selectedCrop?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function PriceChart({ selectedCrop }: PriceChartProps) {
   return (
     <motion.div

@@ -53,7 +53,7 @@ export default function RegisterPage() {
         setError(await res.text());
         setLoading(false);
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred.");
       setLoading(false);
     }

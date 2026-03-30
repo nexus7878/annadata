@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { SectionHeading } from "@/components/section-heading";
 import { MandiChart } from "@/components/dashboard/mandi-chart";
 import { Button } from "@/components/ui/button";
@@ -189,7 +190,7 @@ export default function MandiPricesPage() {
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-4">
                             <div className="relative h-12 w-12 rounded-full overflow-hidden border border-border/50 shadow-sm shrink-0">
-                              <img src={item.image} alt={item.crop} className="object-cover w-full h-full" />
+                              <Image src={item.image} alt={item.crop} fill className="object-cover" sizes="48px" unoptimized />
                             </div>
                             <div>
                               <div className="flex items-center gap-2 mb-1">

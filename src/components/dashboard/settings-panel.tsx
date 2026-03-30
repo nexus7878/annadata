@@ -8,12 +8,12 @@ import Image from "next/image";
 import {
   User, CreditCard, Smartphone, Bell, Shield, Palette,
   MapPin, Mail, Phone, Camera, Check, ChevronRight,
-  Crown, Zap, Star, Wifi, WifiOff, Monitor, Tablet,
-  Watch, Cpu, ToggleLeft, ToggleRight, Lock, Key,
-  Eye, EyeOff, Globe, Languages, Sun, Moon, Volume2,
-  VolumeX, Download, Trash2, LogOut, HelpCircle,
-  ExternalLink, CheckCircle2, AlertTriangle, Clock,
-  IndianRupee, Sparkles, Signal, Battery, BatteryLow,
+  Crown, Zap, Wifi, WifiOff, Monitor,
+  Cpu, ToggleLeft, ToggleRight, Lock, Key,
+  Eye, EyeOff, Globe, Languages, Sun, Moon,
+  Download, Trash2, LogOut,
+  CheckCircle2, AlertTriangle, Clock,
+  IndianRupee, Signal, Battery, BatteryLow,
   Radar, Video, Plane, Leaf, Thermometer, Droplets,
   Wind, CloudRain, SunDim, Radio, ShieldCheck, RefreshCw,
 } from "lucide-react";
@@ -24,7 +24,7 @@ type Tab = "profile" | "subscription" | "devices" | "notifications" | "security"
 /* ─── Animation helpers ─── */
 const fadeUp = {
   hidden: { opacity: 0, y: 16, filter: "blur(4px)" },
-  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+  visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const } },
 };
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } };
 

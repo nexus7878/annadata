@@ -473,7 +473,7 @@ export default function MarketPage() {
   const [viewMode, setViewMode] = useState<"grid" | "featured">("grid");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartCount] = useState(0);
 
   // Dark mode toggle
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 // Sample mock listings
-let mockListings = [
+const mockListings = [
   {
     id: "mock-1",
     cropName: "Premium Wheat",

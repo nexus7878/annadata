@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Sparkles,
   Star,
-  ShoppingCart,
   TrendingUp,
   ArrowRight,
   Flame,
@@ -128,12 +127,11 @@ export function AIRecommendations({ crop }: AIRecommendationsProps) {
                     </div>
                     <div className="flex-1 min-w-0">
                       {/* Tag */}
-                      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-sm mb-1 ${
-                        product.tag === "Hot Deal" ? "bg-red-500/10 text-red-500" :
-                        product.tag === "Organic" ? "bg-emerald-500/10 text-emerald-600" :
-                        product.tag === "Best Seller" ? "bg-amber-500/10 text-amber-600" :
-                        "bg-blue-500/10 text-blue-600"
-                      }`}>
+                      <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-sm mb-1 ${product.tag === "Hot Deal" ? "bg-red-500/10 text-red-500" :
+                          product.tag === "Organic" ? "bg-emerald-500/10 text-emerald-600" :
+                            product.tag === "Best Seller" ? "bg-amber-500/10 text-amber-600" :
+                              "bg-blue-500/10 text-blue-600"
+                        }`}>
                         {product.tag === "Hot Deal" && <Flame className="h-3 w-3" />}
                         {product.tag === "Organic" && <Leaf className="h-3 w-3" />}
                         {product.tag === "Best Seller" && <TrendingUp className="h-3 w-3" />}

@@ -27,16 +27,16 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as any).role;
-        token.id = (user as any).id;
+        token.role = (user as unknown as Record<string, unknown>).role;
+        token.id = (user as unknown as Record<string, unknown>).id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        // @ts-ignore
+        // @ts-expect-error — extending session.user with custom role field
         session.user.role = token.role;
-        // @ts-ignore
+        // @ts-expect-error — extending session.user with custom id field
         session.user.id = token.id;
       }
       return session;
