@@ -91,7 +91,7 @@ export default function MandiPricesPage() {
               return json.records[0];
             }
             return null; // Force fallback if 0 records
-          } catch (error) {
+          } catch {
             return null;
           }
         };
@@ -255,7 +255,7 @@ export default function MandiPricesPage() {
             ) : (
               <div className="grid sm:grid-cols-2 gap-5">
                 <AnimatePresence mode="popLayout">
-                  {filteredData.map((item, index) => (
+                  {filteredData.map((item) => (
                     <motion.div
                       key={item.id}
                       initial={{ opacity: 0, y: 10 }}
