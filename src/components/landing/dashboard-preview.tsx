@@ -17,7 +17,7 @@ const linePoints = "10,85 30,70 50,75 70,55 90,60 110,42 130,48 150,30 170,35 19
 
 export function DashboardPreview() {
   return (
-    <section className="py-20 sm:py-28 md:py-36 overflow-hidden relative">
+    <section id="overview" className="py-20 sm:py-28 md:py-36 overflow-hidden relative">
       {/* Cinematic Background */}
       <div className="absolute inset-0 bg-background mix-blend-multiply z-0 pointer-events-none" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/[0.04] rounded-full blur-[150px] pointer-events-none" />
@@ -42,11 +42,11 @@ export function DashboardPreview() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
           className="relative max-w-[1100px] mx-auto mt-16"
         >
           {/* Main dashboard mockup container - Forced Dark Mode for contrast against white page */}
-          <div className="relative rounded-2xl sm:rounded-3xl border border-gray-800 bg-[#121212] shadow-2xl overflow-hidden ring-1 ring-white/5 shadow-emerald-900/10">
+          <div className="relative rounded-2xl sm:rounded-3xl border border-gray-800 bg-[#121212] shadow-[0_30px_80px_-15px_rgba(0,0,0,0.8)] overflow-hidden ring-1 ring-white/10 shadow-emerald-900/20">
             
             {/* Window chrome / Header */}
             <div className="h-12 border-b border-white/10 flex items-center px-4 sm:px-6 gap-4 bg-[#1A1A1A]">
@@ -62,7 +62,7 @@ export function DashboardPreview() {
               </div>
               <div className="w-12 flex justify-end">
                 <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <Image src="/images/symbollogo.png" alt="Logo" width={14} height={14} className="opacity-80 brightness-0 invert" />
+                  <Image src="/symbollogo.png" alt="Logo" width={14} height={14} className="dark:brightness-200" />
                 </div>
               </div>
             </div>
@@ -132,7 +132,7 @@ export function DashboardPreview() {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: 0.2 + i * 0.1, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ delay: 0.2 + i * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                         className={`bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3 relative overflow-hidden group hover:bg-white/10 transition-colors duration-300`}
                       >
                         {/* Soft background glow */}
@@ -185,7 +185,7 @@ export function DashboardPreview() {
                           initial={{ height: 0 }}
                           whileInView={{ height: `${h}%` }}
                           viewport={{ once: true }}
-                          transition={{ delay: 0.4 + i * 0.04, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                          transition={{ delay: 0.4 + i * 0.04, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                           className={`flex-1 rounded-t-lg transition-colors duration-300 relative group overflow-hidden ${
                             i % 2 === 0 
                               ? 'bg-primary/20 hover:bg-primary/30' 
@@ -228,7 +228,7 @@ export function DashboardPreview() {
                               initial={{ strokeDashoffset: 2 * Math.PI * 38 }}
                               whileInView={{ strokeDashoffset: 2 * Math.PI * 38 * 0.15 }}
                               viewport={{ once: true }}
-                              transition={{ delay: 0.6, duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
+                              transition={{ delay: 0.6, duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
                               className="drop-shadow-[0_0_8px_rgba(52,211,153,0.4)]"
                             />
                           </svg>
@@ -289,7 +289,7 @@ export function DashboardPreview() {
             initial={{ opacity: 0, x: 20, scale: 0.9 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 1.2, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 1.2, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="absolute -right-6 lg:-right-12 top-24 lg:top-32 hidden md:block z-20"
           >
             <motion.div
@@ -311,7 +311,7 @@ export function DashboardPreview() {
             initial={{ opacity: 0, x: -20, scale: 0.9 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 1.4, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 1.4, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="absolute -left-6 lg:-left-12 bottom-32 hidden lg:block z-20"
           >
             <motion.div
@@ -334,7 +334,7 @@ export function DashboardPreview() {
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 1.6, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ delay: 1.6, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
             className="absolute -left-4 top-16 hidden md:block z-20"
           >
             <motion.div

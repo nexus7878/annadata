@@ -3,7 +3,7 @@
 import { motion, Variants } from "framer-motion";
 import {
   Search, Droplets, FlaskConical, TrendingUp, MapPin, Landmark,
-  ArrowUpRight, Bot, ShoppingBag, CloudSun, TestTubes, Tractor, Shield,
+  ArrowUpRight, ShoppingCart, ShoppingBag, CloudSun, TestTubes, Tractor, Shield,
 } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
 import Link from "next/link";
@@ -64,13 +64,13 @@ const features = [
     href: "/schemes",
   },
   {
-    title: "AI Assistant",
-    description: "Chat with our multilingual AI assistant for instant farming advice, pest solutions, and crop recommendations.",
-    icon: Bot,
+    title: "Krishi Market",
+    description: "Shop quality seeds, fertilizers, pesticides, and farming equipment — delivered directly to your doorstep.",
+    icon: ShoppingCart,
     color: "text-pink-500",
     bg: "from-pink-500/10 to-pink-500/5",
     glow: "group-hover:shadow-pink-500/10",
-    href: "/ai-assistant",
+    href: "/krishi-market",
   },
   {
     title: "Annadata Market",
@@ -123,21 +123,26 @@ const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.06, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 },
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 25, filter: "blur(6px)" },
+  hidden: { opacity: 0, y: 30, filter: "blur(8px)", scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
     filter: "blur(0px)",
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+    scale: 1,
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
+import { useSession } from "@/hooks/use-mock-auth";
+
 export function FeaturesSection() {
+  const { data: session } = useSession();
+
   return (
     <section id="features" className="py-20 sm:py-28 md:py-36 relative">
       {/* Ambient background glow */}
@@ -159,13 +164,15 @@ export function FeaturesSection() {
         >
           {features.map((feature, index) => {
             const Icon = feature.icon;
+            const linkHref = session ? feature.href : "/login";
             return (
               <motion.div key={index} variants={itemVariants}>
-                <Link href={feature.href} className="block h-full">
+                <Link href={linkHref} className="block h-full">
                   <div
-                    className={`group relative h-full rounded-2xl p-5 sm:p-6 transition-all duration-500 cursor-pointer overflow-hidden border border-border/50 bg-card/40 hover:bg-card hover:border-border/80 hover:shadow-xl ${feature.glow}`}
+                    className={`group relative h-full rounded-2xl p-5 sm:p-6 transition-all duration-500 cursor-pointer overflow-hidden border border-border/30 bg-card/20 backdrop-blur-md hover:bg-card/60 hover:border-primary/30 hover:shadow-2xl hover:shadow-primary/10 ${feature.glow}`}
                   >
                     {/* Subtle gradient spot on hover */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.bg} opacity-0 group-hover:opacity-[0.15] transition-opacity duration-700 pointer-events-none`} />
                     <div className={`absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br ${feature.bg} rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none`} />
 
                     <div className="relative z-10">

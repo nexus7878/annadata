@@ -5,21 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Search, Droplets, Building2, Landmark, Bot, Leaf, TrendingUp, ShoppingBag, LogOut } from "lucide-react";
+import { Menu, X, Search, Leaf, LogOut, Activity, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { useSession, signOut } from "next-auth/react";
+import { useSession, signOut } from "@/hooks/use-mock-auth";
 
-const navLinks = [
+const landingLinks = [
   { name: "Home", href: "/", icon: Leaf },
-  { name: "Crop Analysis", href: "/crop-analysis", icon: Search },
-  { name: "Irrigation", href: "/irrigation", icon: Droplets },
-  { name: "Mandi Prices", href: "/mandi-prices", icon: TrendingUp },
-  { name: "Warehouse", href: "/warehouse", icon: Building2 },
-  { name: "Schemes", href: "/schemes", icon: Landmark },
-  { name: "AI Assistant", href: "/ai-assistant", icon: Bot },
-  { name: "Market", href: "/market", icon: ShoppingBag },
+  { name: "Features", href: "/#features", icon: Search },
+  { name: "Overview", href: "/#overview", icon: Activity },
+  { name: "Benefits", href: "/#benefits", icon: Star },
 ];
 
 export function Navbar() {
@@ -72,20 +68,20 @@ export function Navbar() {
               : "bg-transparent"
           )}>
             {/* Logo */}
-            <Link href="/" className="flex items-center group">
+            <Link href="/" className="flex items-center group gap-2">
               <motion.div
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, filter: "drop-shadow(0px 4px 6px rgba(0,0,0,0.1))" }}
                 whileTap={{ scale: 0.95 }}
                 className="flex items-center justify-center"
               >
-                <Image src="/images/symbollogo.png" alt="Annadata" width={36} height={36} className="h-9 w-9 object-contain" />
+                <Image src="/symbollogo.png" alt="Annadata" width={40} height={40} className="h-10 w-10 object-contain dark:brightness-200" />
               </motion.div>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden xl:flex items-center gap-0.5">
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+              {landingLinks.map((link) => {
+                const isActive = pathname === link.href || (pathname === "/" && link.href.startsWith("/#"));
                 return (
                   <Link
                     key={link.name}
@@ -184,7 +180,7 @@ export function Navbar() {
             >
               <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border">
                 <div className="flex items-center">
-                  <Image src="/images/symbollogo.png" alt="Annadata" width={32} height={32} className="h-8 w-8 object-contain" />
+                  <Image src="/symbollogo.png" alt="Annadata" width={40} height={40} className="h-10 w-10 object-contain dark:brightness-200" />
                 </div>
                 <div className="flex items-center gap-2">
                   <motion.button
@@ -199,8 +195,8 @@ export function Navbar() {
               </div>
 
               <div className="flex-1 overflow-y-auto py-3 sm:py-4 px-2 sm:px-3">
-                {navLinks.map((link, index) => {
-                  const isActive = pathname === link.href;
+                {landingLinks.map((link, index) => {
+                  const isActive = pathname === link.href || (pathname === "/" && link.href.startsWith("/#"));
                   const Icon = link.icon;
                   return (
                     <motion.div

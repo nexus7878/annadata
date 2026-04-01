@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn } from "@/hooks/use-mock-auth";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, ArrowRight, Smartphone, Sparkles, CheckCircle2 } from "lucide-react";
@@ -32,7 +32,7 @@ export default function LoginPage() {
       redirect: false,
       email: form.email,
       password: form.password,
-    });
+    }) as { error?: string } | undefined;
 
     if (res?.error) {
       setError(res.error);
@@ -175,21 +175,31 @@ export default function LoginPage() {
           </div>
 
           {/* Quick Demo Login Tabs */}
-          <div className="flex justify-center gap-2">
-             <button
-                type="button"
-                onClick={() => handleDemoSignIn("FARMER")}
-                className={`text-[13px] px-5 py-2 rounded-full font-semibold transition-colors border ${role === "FARMER" ? "bg-[#1b7b43] text-white border-transparent shadow-sm" : "bg-[#f8f9fa] border-gray-100 text-gray-500 hover:bg-gray-100"}`}
-             >
-                Farmer Example
-             </button>
-             <button
-                type="button"
-                onClick={() => handleDemoSignIn("BUYER")}
-                className={`text-[13px] px-5 py-2 rounded-full font-semibold transition-colors border ${role === "BUYER" ? "bg-[#1b7b43] text-white border-transparent shadow-sm" : "bg-[#f8f9fa] border-gray-100 text-gray-500 hover:bg-gray-100"}`}
-             >
-                Retailer Example
-             </button>
+          <div className="relative flex justify-center bg-muted/50 p-1.5 rounded-full border border-border/50 mx-auto w-fit shadow-inner">
+             {(["FARMER", "BUYER"] as const).map((tab) => {
+                const label = tab === "FARMER" ? "Farmer" : "Retailer";
+                return (
+                  <button
+                    key={tab}
+                    type="button"
+                    onClick={() => handleDemoSignIn(tab)}
+                    className={`relative px-8 py-2 rounded-full text-[13px] font-semibold transition-colors z-10 min-w-[120px] ${
+                      role === tab ? "text-white" : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {role === tab && (
+                      <motion.div
+                        layoutId="active-login-tab"
+                        className="absolute inset-0 bg-[#1b7b43] rounded-full shadow-md"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
+                      />
+                    )}
+                    <span className="relative z-20 flex items-center justify-center gap-2">
+                       {label}
+                    </span>
+                  </button>
+                );
+             })}
           </div>
 
           {/* Form */}

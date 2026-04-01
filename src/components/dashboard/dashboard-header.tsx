@@ -1,8 +1,8 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "@/hooks/use-mock-auth";
 import Image from "next/image";
-import { Search, Bell, Menu, ChevronDown, Sun, Moon } from "lucide-react";
+import { Search, Bell, Menu, ChevronDown, Sun, Moon, LogOut, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
   const { data: session } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   useEffect(() => setMounted(true), []);
 
@@ -100,25 +101,67 @@ export function DashboardHeader({ onMobileMenuToggle }: DashboardHeaderProps) {
         <div className="h-8 w-px bg-border hidden sm:block mx-1" />
 
         {/* User Card */}
-        <div className="flex items-center gap-3 pl-2 cursor-pointer group rounded-xl p-1.5 hover:bg-muted/80 border border-transparent hover:border-border/50 transition-all duration-300">
-          <div className="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 overflow-hidden relative shrink-0">
-             {session?.user?.image ? (
-               <Image src={session.user.image} alt="User" fill className="object-cover" />
-             ) : (
-               <div className="w-full h-full flex flex-col items-center justify-center font-bold text-primary text-sm">
-                 {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
-               </div>
-             )}
+        <div className="relative">
+          <div 
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+            className="flex items-center gap-3 pl-2 cursor-pointer group rounded-xl p-1.5 hover:bg-muted/80 border border-transparent hover:border-border/50 transition-all duration-300"
+          >
+            <div className="w-9 h-9 rounded-lg bg-primary/15 border border-primary/25 overflow-hidden relative shrink-0">
+               {session?.user?.image ? (
+                 <Image src={session.user.image} alt="User" fill className="object-cover" />
+               ) : (
+                 <div className="w-full h-full flex flex-col items-center justify-center font-bold text-primary text-sm">
+                   {session?.user?.name ? session.user.name.charAt(0).toUpperCase() : "A"}
+                 </div>
+               )}
+            </div>
+            <div className="hidden md:flex flex-col pr-1">
+              <span className="text-[13px] font-semibold text-foreground leading-tight">
+                {session?.user?.name || "Annadata Admin"}
+              </span>
+              <span className="text-[10px] font-medium text-muted-foreground leading-tight mt-0.5">
+                Premium Account
+              </span>
+            </div>
+            <ChevronDown className={`w-4 h-4 text-muted-foreground group-hover:text-foreground hidden md:block transition-all duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
           </div>
-          <div className="hidden md:flex flex-col pr-1">
-            <span className="text-[13px] font-semibold text-foreground leading-tight">
-              {session?.user?.name || "Annadata Admin"}
-            </span>
-            <span className="text-[10px] font-medium text-muted-foreground leading-tight mt-0.5">
-              Premium Account
-            </span>
-          </div>
-          <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-foreground hidden md:block transition-colors" />
+
+          <AnimatePresence>
+            {isProfileOpen && (
+              <>
+                <div 
+                  className="fixed inset-0 z-40" 
+                  onClick={() => setIsProfileOpen(false)} 
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="absolute right-0 mt-3 w-56 bg-card/95 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl z-50 overflow-hidden"
+                >
+                  <div className="p-3 border-b border-border/50 bg-muted/20">
+                    <p className="text-sm font-bold text-foreground font-heading">{session?.user?.name || "Annadata Admin"}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 font-medium truncate">{session?.user?.email || "admin@annadata.in"}</p>
+                  </div>
+                  <div className="p-2 space-y-1">
+                    <button 
+                      onClick={() => setIsProfileOpen(false)}
+                      className="w-full flex items-center gap-3 px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-xl transition-all duration-200"
+                    >
+                      <User className="w-4 h-4" /> Profile Details
+                    </button>
+                    <button 
+                      onClick={() => signOut({ callbackUrl: "/login" })}
+                      className="w-full flex items-center gap-3 px-3 py-2 text-sm font-bold text-red-500 hover:text-red-600 hover:bg-red-500/10 rounded-xl transition-all duration-200 group"
+                    >
+                      <LogOut className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" /> Sign Out
+                    </button>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </header>

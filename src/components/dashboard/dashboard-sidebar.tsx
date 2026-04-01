@@ -11,7 +11,7 @@ import {
   Droplets,
   TrendingUp,
   Building2,
-  Bot,
+  ShoppingCart,
   Landmark,
   Sparkles,
   Settings,
@@ -24,7 +24,7 @@ const navItems = [
   { label: "Smart Irrigation", href: "/irrigation", icon: Droplets },
   { label: "Mandi Prices", href: "/mandi-prices", icon: TrendingUp },
   { label: "Warehouse", href: "/warehouse", icon: Building2 },
-  { label: "AI Assistant", href: "/ai-assistant", icon: Bot },
+  { label: "Krishi Market", href: "/krishi-market", icon: ShoppingCart },
   { label: "Schemes", href: "/schemes", icon: Landmark },
 ];
 
@@ -42,8 +42,8 @@ export function DashboardSidebar({ mobileOpen, onMobileClose }: DashboardSidebar
       {/* Brand Logo */}
       <div className="flex items-center justify-between mb-10 px-3">
         <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center border border-primary/25 group-hover:bg-primary/25 transition-all duration-300 group-hover:shadow-md group-hover:shadow-primary/10">
-            <Image src="/images/symbollogo.png" alt="Logo" width={20} height={20} className="opacity-90 dark:brightness-0 dark:invert" />
+          <div className="flex items-center justify-center transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-lg">
+            <Image src="/symbollogo.png" alt="Logo" width={36} height={36} className="object-contain dark:brightness-200 dark:contrast-100" />
           </div>
           <span className="font-bold text-foreground tracking-wide font-heading text-[15px]">ANNADATA</span>
         </Link>

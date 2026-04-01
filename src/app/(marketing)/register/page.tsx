@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn } from "@/hooks/use-mock-auth";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mail, Lock, User, ArrowRight, Home, Sun, Sprout, Store, Smartphone, Sparkles, CheckCircle2 } from "lucide-react";
@@ -39,14 +39,8 @@ export default function RegisterPage() {
 
       if (res.ok) {
         setSuccess(true);
-        // Automatically sign them in
-        await signIn("credentials", {
-          redirect: false,
-          email: form.email,
-          password: form.password,
-        });
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push("/login?registered=true");
           router.refresh();
         }, 1500);
       } else {

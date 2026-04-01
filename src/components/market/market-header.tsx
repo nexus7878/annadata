@@ -73,7 +73,7 @@ export function MarketHeader({
       <div className="flex items-center gap-3 shrink-0">
         <div className="flex items-center justify-center">
           <Image 
-            src="/images/symbollogo.png" 
+            src="/symbollogo.png" 
             alt="Annadata Logo" 
             width={36} 
             height={36} 

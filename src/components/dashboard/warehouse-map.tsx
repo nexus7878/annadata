@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Loader2, LocateFixed, Navigation, Truck, Package, CheckCircle2, X } from "lucide-react";
+import { Loader2, LocateFixed, Navigation, X, MapPin, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // ============================================================
@@ -39,7 +39,7 @@ const FALLBACK_WAREHOUSES: Omit<WarehouseLocation, "distance">[] = [
     id: "fallback-1",
     name: "Kisan Cold Storage",
     type: "warehouse",
-    lat: 0, lng: 0, // Will be offset from user location
+    lat: 0, lng: 0,
     capacity: "450 Tons",
     price: "₹20/qtl/mo",
   },
@@ -77,9 +77,6 @@ const FALLBACK_WAREHOUSES: Omit<WarehouseLocation, "distance">[] = [
   },
 ];
 
-/**
- * Generate fallback warehouses positioned around the user location.
- */
 function generateFallbackData(userLat: number, userLng: number): WarehouseLocation[] {
   const offsets = [
     { dlat: 0.012, dlng: 0.015 },
@@ -124,9 +121,7 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
   const [loadingMsg, setLoadingMsg] = useState("Initializing map...");
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
   const [userPos, setUserPos] = useState<[number, number] | null>(null);
-  const [selectedTransport, setSelectedTransport] = useState<string | null>("mini-truck");
 
-  // Import type for L namespace
   type LType = typeof import("leaflet");
   const leafletRef = useRef<LType | null>(null);
 
@@ -134,7 +129,7 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
   // Overpass API: fetch nearby warehouses/marketplaces
   // --------------------------------------------------------
   const fetchNearbyPlaces = useCallback(async (lat: number, lng: number): Promise<WarehouseLocation[]> => {
-    const radius = 5000; // 5km
+    const radius = 5000;
     const query = `
       [out:json][timeout:10];
       (
@@ -189,14 +184,13 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
   }, []);
 
   // --------------------------------------------------------
-  // OSRM routing: draw route between two points
+  // OSRM routing
   // --------------------------------------------------------
   const drawRoute = useCallback(async (from: [number, number], to: [number, number]) => {
     const L = leafletRef.current;
     const map = mapRef.current;
     if (!L || !map) return;
 
-    // Remove previous route
     if (routeLayerRef.current) {
       map.removeLayer(routeLayerRef.current);
       routeLayerRef.current = null;
@@ -216,19 +210,16 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
         (c: [number, number]) => [c[1], c[0]] as [number, number]
       );
 
-      // Draw polyline
       routeLayerRef.current = L.polyline(coords, {
-        color: "#f97316", // orange-500
+        color: "#f97316",
         weight: 4,
         opacity: 0.85,
         dashArray: "8 4",
         lineCap: "round",
       }).addTo(map);
 
-      // Fit bounds to show entire route
       map.fitBounds(routeLayerRef.current.getBounds(), { padding: [40, 40] });
 
-      // Calculate distance and duration
       const distKm = route.distance / 1000;
       const durMin = Math.round(route.duration / 60);
       setRouteInfo({
@@ -296,12 +287,10 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
     let mounted = true;
 
     const initMap = async () => {
-      // Dynamic import to avoid SSR issues
       const L = await import("leaflet");
       if (!mounted || !mapContainerRef.current) return;
       leafletRef.current = L;
 
-      // Fix default marker icon paths (Leaflet quirk with bundlers)
       delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -309,21 +298,16 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
         shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
 
-      // Create map (default center: India)
       const map = L.map(mapContainerRef.current, {
         zoomControl: false,
         attributionControl: false,
       }).setView([20.5937, 78.9629], 5);
 
-      // Add zoom control to bottom-right
       L.control.zoom({ position: "bottomright" }).addTo(map);
-
-      // Attribution (small, non-intrusive)
       L.control.attribution({ position: "bottomleft", prefix: false })
         .addAttribution('© <a href="https://www.openstreetmap.org/copyright">OSM</a>')
         .addTo(map);
 
-      // OpenStreetMap tiles with a clean style
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
       }).addTo(map);
@@ -331,7 +315,6 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
       mapRef.current = map;
       const icons = createIcons(L);
 
-      // ---- Get user location ----
       setLoadingMsg("Detecting your location...");
 
       try {
@@ -346,11 +329,8 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
         if (!mounted) return;
         const { latitude: lat, longitude: lng } = pos.coords;
         setUserPos([lat, lng]);
-
-        // Center map on user
         map.setView([lat, lng], 14);
 
-        // User marker
         userMarkerRef.current = L.marker([lat, lng], { icon: icons.userIcon, zIndexOffset: 1000 })
           .addTo(map)
           .bindPopup(
@@ -362,17 +342,13 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
           )
           .openPopup();
 
-        // ---- Fetch nearby places ----
         setLoadingMsg("Searching nearby warehouses...");
         let places = await fetchNearbyPlaces(lat, lng);
 
-        // Fallback if no results
         if (places.length === 0) {
-          console.log("No Overpass results, using fallback data");
           places = generateFallbackData(lat, lng);
         }
 
-        // Add distance to each
         places = places.map((p) => ({
           ...p,
           distance: p.distance || (() => {
@@ -381,17 +357,14 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
           })(),
         }));
 
-        // Sort by distance
         places.sort((a, b) => {
           const da = haversineDistance(lat, lng, a.lat, a.lng);
           const db = haversineDistance(lat, lng, b.lat, b.lng);
           return da - db;
         });
 
-        // Notify parent of results
         onNearbyResults?.(places);
 
-        // ---- Add markers ----
         places.forEach((place) => {
           const icon = place.type === "warehouse" ? icons.warehouseIcon : icons.marketIcon;
           const marker = L.marker([place.lat, place.lng], { icon })
@@ -408,21 +381,15 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
               { className: "leaflet-popup-custom" }
             );
 
-          // Click handler: highlight + route
           marker.on("click", () => {
-            // Reset all markers to default icons
             markersRef.current.forEach((m, idx) => {
               const p = places[idx];
               if (p) {
                 m.setIcon(p.type === "warehouse" ? icons.warehouseIcon : icons.marketIcon);
               }
             });
-
-            // Highlight selected
             marker.setIcon(icons.selectedIcon);
             onSelectWarehouse?.(place);
-
-            // Draw route
             drawRoute([lat, lng], [place.lat, place.lng]);
           });
 
@@ -434,7 +401,6 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
         console.warn("Geolocation failed:", geoErr);
         if (!mounted) return;
 
-        // Default: New Delhi
         const fallbackLat = 28.6139;
         const fallbackLng = 77.209;
         setUserPos([fallbackLat, fallbackLng]);
@@ -451,7 +417,6 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
           )
           .openPopup();
 
-        // Use fallback data
         const places = generateFallbackData(fallbackLat, fallbackLng).map((p) => ({
           ...p,
           distance: (() => {
@@ -504,37 +469,26 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // --------------------------------------------------------
-  // Re-center on user location button
-  // --------------------------------------------------------
   const handleRecenter = useCallback(() => {
     if (mapRef.current && userPos) {
       mapRef.current.setView(userPos, 14, { animate: true });
     }
   }, [userPos]);
 
-  // --------------------------------------------------------
-  // Clear route
-  // --------------------------------------------------------
   const handleClearRoute = useCallback(() => {
     if (routeLayerRef.current && mapRef.current) {
       mapRef.current.removeLayer(routeLayerRef.current);
       routeLayerRef.current = null;
     }
     setRouteInfo(null);
-    setSelectedTransport("mini-truck");
     onSelectWarehouse?.(null);
 
-    // Reset marker icons
     const L = leafletRef.current;
     if (L) {
       const icons = createIcons(L);
-      // We don't have direct access to places here, so we reset via a workaround
       markersRef.current.forEach((m) => {
-        // Check the current icon class to determine type
         const el = m.getElement();
         if (el?.querySelector(".custom-marker-selected") || el?.classList.contains("custom-marker-selected")) {
-          // Default to warehouse icon
           m.setIcon(icons.warehouseIcon);
         }
       });
@@ -550,7 +504,6 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
   // --------------------------------------------------------
   return (
     <div className="relative w-full h-full min-h-[400px]">
-      {/* Map container */}
       <div ref={mapContainerRef} className="absolute inset-0 z-0" />
 
       {/* Loading overlay */}
@@ -572,127 +525,38 @@ export function WarehouseMap({ onSelectWarehouse, onNearbyResults }: WarehouseMa
         </button>
       )}
 
-      {/* Uber-like Transport Options Overlay */}
+      {/* Minimal Route Info Bar (replaces transport overlay) */}
       <AnimatePresence>
         {routeInfo && (
           <motion.div
-            initial={{ y: "100%", opacity: 0 }}
+            initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: "100%", opacity: 0 }}
+            exit={{ y: 20, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="absolute bottom-0 left-0 right-0 z-30 bg-card/95 backdrop-blur-xl border-t border-border/60 shadow-2xl rounded-t-3xl overflow-hidden flex flex-col max-h-[60vh]"
-            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+            className="absolute bottom-4 left-4 right-4 z-30 bg-card/95 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl px-4 py-3 flex items-center justify-between"
           >
-            {/* Grab handle & Header */}
-            <div className="pt-3 pb-2 px-5 flex flex-col items-center border-b border-border/40 shrink-0">
-              <div className="w-12 h-1.5 bg-muted rounded-full mb-3" />
-              <div className="flex items-center justify-between w-full">
-                <div>
-                  <h3 className="font-bold text-lg text-foreground">Select Transport</h3>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                    <span className="flex items-center gap-1 bg-orange-500/10 text-orange-500 px-1.5 py-0.5 rounded-md font-medium">
-                      <Navigation className="h-3 w-3" /> {routeInfo.distance}
-                    </span>
-                    <span>•</span>
-                    <span>{routeInfo.duration} trip</span>
-                  </div>
-                </div>
-                <button
-                  onClick={handleClearRoute}
-                  className="h-8 w-8 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-colors"
-                >
-                  <X className="h-4 w-4 text-muted-foreground" />
-                </button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5 text-sm font-semibold text-foreground">
+                <Navigation className="h-4 w-4 text-orange-500" />
+                {routeInfo.distance}
+              </div>
+              <div className="h-4 w-px bg-border/60" />
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Clock className="h-3.5 w-3.5" />
+                {routeInfo.duration}
+              </div>
+              <div className="h-4 w-px bg-border/60" />
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <MapPin className="h-3.5 w-3.5" />
+                ETA ~{routeInfo.duration}
               </div>
             </div>
-
-            {/* Transport Options List */}
-            <div className="overflow-y-auto px-3 py-3 space-y-2 pb-6 shrink min-h-0 custom-scrollbar">
-              {[
-                {
-                  id: "pickup",
-                  name: "Pickup Truck",
-                  desc: "Up to 1.5 Tons • Small loads",
-                  time: "5 min away",
-                  price: Math.max(150, Math.round(50 + routeInfo.distanceKm * 18)),
-                  icon: <Package className="h-6 w-6 text-blue-500" />,
-                  bg: "bg-blue-500/10",
-                  border: "border-blue-500/20",
-                },
-                {
-                  id: "mini-truck",
-                  name: "Mini Truck",
-                  desc: "Up to 3 Tons • Medium loads",
-                  time: "12 min away",
-                  price: Math.max(300, Math.round(100 + routeInfo.distanceKm * 25)),
-                  icon: <Truck className="h-6 w-6 text-orange-500" />,
-                  bg: "bg-orange-500/10",
-                  border: "border-orange-500/30",
-                  popular: true,
-                },
-                {
-                  id: "heavy-truck",
-                  name: "Heavy Trailer",
-                  desc: "Up to 15 Tons • Large bulk",
-                  time: "25 min away",
-                  price: Math.max(800, Math.round(300 + routeInfo.distanceKm * 40)),
-                  icon: <Truck className="h-6 w-6 text-purple-500" />,
-                  bg: "bg-purple-500/10",
-                  border: "border-purple-500/20",
-                },
-              ].map((opt) => (
-                <div
-                  key={opt.id}
-                  onClick={() => setSelectedTransport(opt.id)}
-                  className={`relative flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer ${
-                    selectedTransport === opt.id
-                      ? "border-orange-500 shadow-sm shadow-orange-500/10 bg-orange-500/[0.02]"
-                      : "border-border/40 hover:border-border/80 hover:bg-muted/20"
-                  }`}
-                >
-                  {opt.popular && (
-                    <span className="absolute -top-2.5 left-4 bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
-                      Recommended
-                    </span>
-                  )}
-                  
-                  <div className="flex items-center gap-4">
-                    <div className={`h-12 w-12 rounded-xl flex items-center justify-center border ${opt.bg} ${opt.border}`}>
-                      {opt.icon}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-sm text-foreground">{opt.name}</h4>
-                        <span className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-medium text-muted-foreground">
-                          {opt.time}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground mt-0.5">{opt.desc}</p>
-                    </div>
-                  </div>
-
-                  <div className="text-right">
-                    <p className="font-bold text-base text-foreground">₹{opt.price}</p>
-                    {selectedTransport === opt.id && (
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="flex justify-end mt-1"
-                      >
-                        <CheckCircle2 className="h-4 w-4 text-orange-500" />
-                      </motion.div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Action Button */}
-            <div className="p-4 border-t border-border/40 bg-card/50 shrink-0">
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-2">
-                Book Transport <Navigation className="h-4 w-4" />
-              </button>
-            </div>
+            <button
+              onClick={handleClearRoute}
+              className="h-7 w-7 rounded-full bg-muted/50 hover:bg-muted flex items-center justify-center transition-colors shrink-0"
+            >
+              <X className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
